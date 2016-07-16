@@ -46,7 +46,7 @@ class Scraper {
     }
 
     writeToFile(data) {
-        fs.appendFile(`${this.destination}/APPL.txt`, data);
+        fs.appendFile(`${this.destination}APPL.txt`, data);
     }
 
     parse(html) {
