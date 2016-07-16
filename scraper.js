@@ -1,24 +1,26 @@
 'use strict';
 
 const https = require('https');
+const fs = require('fs');
 const cheerio = require('cheerio');
 
 class Scraper {
-    constructor(url, query) {
+    constructor(url, query, destination) {
         this.url = url;
         this.query = query;
+        this.destination = destination;
     }
 
-    fetch() {
-        return this.fetchPage().then(html => {
+    scrap() {
+        return this.fetch().then(html => {
             this.parse(html);
 
             this.query = this.getNextQuery(html);
-            if (this.query) return this.fetch();
+            if (this.query) return this.scrap();
         })
     }
 
-    fetchPage() {
+    fetch() {
         return new Promise((resolve, reject) => {
             https.get(this.url + this.query, res => {
                 let data = '';
@@ -35,6 +37,10 @@ class Scraper {
         })
     }
 
+    writeToFile(data) {
+        fs.appendFile(`${this.destination}/APPL.txt`, data);
+    }
+
     parse(html) {
         let $ = cheerio.load(html);
         let data = '';
@@ -48,8 +54,7 @@ class Scraper {
                 data += `${date},${close},${volume}\n`;
             }
         })
-
-        console.log(data);
+        this.writeToFile(data);
     }
 
     getNextQuery(html) {
