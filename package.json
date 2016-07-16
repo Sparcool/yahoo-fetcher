@@ -18,6 +18,6 @@
   "homepage": "https://github.com/Sparcool/yahoo-fetcher#readme",
   "dependencies": {
     "bluebird": "^3.4.1",
-    "cheerio": "^0.21.0"
+    "cheerio": "^0.20.0"
   }
 }
