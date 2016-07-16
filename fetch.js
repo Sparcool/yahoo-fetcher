@@ -1,16 +1,29 @@
-var https = require('https');
+'use strict';
 
-module.exports = function(url, callback) {
-    https.get(url, res => {
-        var data = '';
-        res.on('data', chunk => {
-            data += chunk;
+const https = require('https');
+
+class Fetcher {
+    constructor(url) {
+        this.url = url;
+    }
+
+    fetch() {
+        return new Promise((resolve, reject) => {
+            https.get(this.url, res => {
+                let data = '';
+                res.on('data', chunk => {
+                    data += chunk;
+                })
+                res.on('end', () => {
+                    resolve(data);
+                })
+            })
+            .on('error', function() {
+                reject(null);
+            })
         })
-        res.on("end", () => {
-            callback(null, data);
-        })
-    })
-    .on("error", function() {
-        callback(null);
-    })
+    }
 }
+
+module.exports = Fetcher;
+
