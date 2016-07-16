@@ -3,18 +3,26 @@
 const https = require('https');
 const fs = require('fs');
 const cheerio = require('cheerio');
+const ProgressBar = require('progress');
 
 class Scraper {
     constructor(url, query, destination) {
         this.url = url;
         this.query = query;
         this.destination = destination;
+
+        this.bar = new ProgressBar('  downloading [:bar] :percent :etas', {
+            complete: '=',
+            incomplete: ' ',
+            width: 20,
+            total: 6336
+        })
     }
 
     scrap() {
         return this.fetch().then(html => {
             this.parse(html);
-
+            this.bar.tick(66);
             this.query = this.getNextQuery(html);
             if (this.query) return this.scrap();
         })
